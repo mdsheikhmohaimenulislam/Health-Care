@@ -8,9 +8,13 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 import { loginSchema } from "../../../validation";
+import { useLogin } from "@/app/hooks";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const { mutate: login, isPending: loginPanding } = useLogin();
+  const route = useRouter()
 
   const form = useForm({
     defaultValues: {
@@ -21,7 +25,20 @@ export default function LoginForm() {
       onSubmit: loginSchema,
     },
     onSubmit: ({ value }) => {
-      console.log(value);
+      const loginData = {
+        email: value.email,
+        password: value.password,
+      };
+
+      login(loginData,{
+        onSuccess:(res) => {
+           route.push("/")
+        },
+
+        onError:(err)=>{
+            console.log(err);
+        }
+      })
     },
   });
 
