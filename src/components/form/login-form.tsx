@@ -10,11 +10,13 @@ import { Eye, EyeClosed } from "lucide-react";
 import { loginSchema } from "../../../validation";
 import { useLogin } from "@/app/hooks";
 import { useRouter } from "next/navigation";
+import { toast } from "../ui/toast";
+import { Spinner } from "../ui/spinner";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate: login, isPending: loginPanding } = useLogin();
-  const route = useRouter()
+  const route = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -30,15 +32,25 @@ export default function LoginForm() {
         password: value.password,
       };
 
-      login(loginData,{
-        onSuccess:(res) => {
-           route.push("/")
+      login(loginData, {
+        onSuccess: (res) => {
+          toast.add({
+            title: "Login Success",
+            description: "Welcome Back",
+            type: "success",
+          });
+          route.push("/");
         },
 
-        onError:(err)=>{
-            console.log(err);
-        }
-      })
+        onError: (err) => {
+          toast.add({
+            title: "Authorization failure",
+            description: "Something went wrong. please try again",
+            type: "errror",
+          });
+          console.log(err);
+        },
+      });
     },
   });
 
@@ -120,7 +132,15 @@ export default function LoginForm() {
             }}
           </form.Field>
 
-          <Button type="submit">Submit</Button>
+          <Button disabled={loginPanding} type="submit">
+            {loginPanding ? (
+              <>
+                <Spinner /> "Submitting"
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
         </FieldGroup>
       </form>
     </div>
