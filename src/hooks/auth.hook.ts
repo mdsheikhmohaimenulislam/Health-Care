@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getMe, userLogin, userLogOut } from "../api";
+import { getMe, googleOAuth, userLogin, userLogOut } from "../api";
 
 export function useLogin() {
   return useMutation({
@@ -12,6 +12,11 @@ export function useLogout() {
     mutationFn: userLogOut,
   });
 }
+export function useGoogleOAuth() {
+  return useMutation({
+    mutationFn: googleOAuth,
+  });
+}
 
 export function useGetMe() {
   return useQuery({
@@ -20,3 +25,5 @@ export function useGetMe() {
     retry: false,
   });
 }
+
+
