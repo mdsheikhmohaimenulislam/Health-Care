@@ -3,7 +3,13 @@
 import { useForm } from "@tanstack/react-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator } from "../ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "../ui/field";
 
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
@@ -12,12 +18,13 @@ import { loginSchema } from "../../../validation";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import { Spinner } from "../ui/spinner";
-import { useLogin } from "@/hooks";
+import { useGoogleOAuth, useLogin } from "@/hooks";
 import { GoogleLogin } from "@react-oauth/google";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate: login, isPending: loginPanding } = useLogin();
+  const { mutate: googleLogin } = useGoogleOAuth();
   const route = useRouter();
 
   const form = useForm({
@@ -55,6 +62,49 @@ export default function LoginForm() {
       });
     },
   });
+
+  const handleGoogleSuccess = (credentialResponse: { credential: string }) => {
+    const idToken = credentialResponse.credential;
+
+    if (!idToken) {
+      toast.add({
+        title: "Google OAuht Failed",
+        description: "Something went Wrong. Please try again",
+        type: "error",
+      });
+      return;
+    }
+
+    googleLogin(
+      { idToken },
+      {
+        onSuccess: () => {
+          toast.add({
+            title: "Logged in Successfully",
+            description: "Welcome back",
+            type: "success",
+          });
+          route.push("/");
+        },
+
+        onError: (error) => {
+          toast.add({
+            title: "Google OAuht Failed",
+            description: error.message,
+            // "Something went Wrong. Please try again"
+            type: "error",
+          });
+        },
+      },
+    );
+  };
+  const handleGoogleError = () => {
+    toast.add({
+      title: "Google OAuht Failed",
+      description: "Something went Wrong. Please try again",
+      type: "error",
+    });
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -146,7 +196,13 @@ export default function LoginForm() {
         </FieldGroup>
       </form>
       <FieldSeparator>OR</FieldSeparator>
-      <GoogleLogin onSuccess={()=>{}} onError={()=>{}} />
+      <GoogleLogin
+        theme="outline"
+        shape="pill"
+        text="continue_with"
+        onSuccess={handleGoogleSuccess}
+        onError={handleGoogleError}
+      />
     </div>
   );
 }
