@@ -6,3 +6,13 @@ export interface RegistrationPayload {
     contactNumber?: string;
   };
 }
+
+export interface VerifyAccountPayload {
+  email: string;
+  otp: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
