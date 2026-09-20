@@ -12,10 +12,11 @@ import {
 import { Button } from "../ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { useEffect, useState } from "react";
+
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useVerifyAccount } from "@/hooks";
 import { toast } from "../ui/toast";
+import { useEffect, useState } from "react";
 
 const RESEND_COOLDOWN = 120;
 

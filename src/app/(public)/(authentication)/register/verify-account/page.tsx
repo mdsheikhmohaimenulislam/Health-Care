@@ -1,5 +1,5 @@
 import Logo from "@/assets/svg/Logo";
-import { RegisterForm } from "@/components/form/register-form";
+
 
 import Link from "next/link";
 
