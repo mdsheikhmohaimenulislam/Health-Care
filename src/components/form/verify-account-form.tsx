@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 
 const RESEND_COOLDOWN = 120;
 
-// =================....,sssdddd..dd...d,ssss,,,,
+// =================....,sssd..ddd..dd...d,ssss,,,,
 
 export default function VerifyAccountForm() {
   const searchParams = useSearchParams();
