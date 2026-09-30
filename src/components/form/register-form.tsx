@@ -14,14 +14,12 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-
+import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
+import { patientRegistrationSchema } from "@/validation";
 import z from "zod";
 import { useRegistration } from "@/hooks";
 import { toast } from "../ui/toast";
 import { Spinner } from "../ui/spinner";
-import GoogleLoginComponent from "../google-login/GoogleLogin";
-import { patientRegistrationSchema } from "../../../validation";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -280,7 +278,7 @@ export function RegisterForm() {
 
       <FieldSeparator>Or continue with</FieldSeparator>
 
-      <GoogleLoginComponent/>
+      <GoogleLoginComponent />
 
       <div className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}

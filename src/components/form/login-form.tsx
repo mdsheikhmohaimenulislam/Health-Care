@@ -10,29 +10,32 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "../ui/field";
-
+import { loginSchema } from "@/validation";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
-import { loginSchema } from "../../../validation";
-
+import { useGoogleOAuth, useLogin } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import { Spinner } from "../ui/spinner";
-import { useGoogleOAuth, useLogin } from "@/hooks";
 import { GoogleLogin } from "@react-oauth/google";
-import GoogleLoginComponent from "../google-login/GoogleLogin";
+import Link from "next/link";
+import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const { mutate: login, isPending: loginPanding } = useLogin();
-  // const { mutate: googleLogin } = useGoogleOAuth();
-  const route = useRouter();
+  const router = useRouter();
+
+  const { mutate: login, isPending: loginPending } = useLogin();
 
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "mirhussain@gmail.com",
+      password: "@Doctor123456",
     },
+    // defaultValues: {
+    //   email: "superadmin@gmail.com",
+    //   password: "Super@admin12345",
+    // },
     validators: {
       onSubmit: loginSchema,
     },
@@ -46,66 +49,22 @@ export default function LoginForm() {
         onSuccess: (res) => {
           toast.add({
             title: "Login Success",
-            description: "Welcome Back",
+            description: "Welcome back",
             type: "success",
           });
-          route.push("/");
+          router.push("/");
         },
-
         onError: (err) => {
           toast.add({
             title: "Authorization failure",
-            description: "Something went wrong. please try again",
-            type: "errror",
+            description:
+              err.message || "Something went wrong. Please try again",
+            type: "error",
           });
-          console.log(err);
         },
       });
     },
   });
-
-  // const handleGoogleSuccess = (credentialResponse: { credential: string }) => {
-  //   const idToken = credentialResponse.credential;
-
-  //   if (!idToken) {
-  //     toast.add({
-  //       title: "Google OAuht Failed",
-  //       description: "Something went Wrong. Please try again",
-  //       type: "error",
-  //     });
-  //     return;
-  //   }
-
-  //   googleLogin(
-  //     { idToken },
-  //     {
-  //       onSuccess: () => {
-  //         toast.add({
-  //           title: "Logged in Successfully",
-  //           description: "Welcome back",
-  //           type: "success",
-  //         });
-  //         route.push("/");
-  //       },
-
-  //       onError: (error) => {
-  //         toast.add({
-  //           title: "Google OAuht Failed",
-  //           description: error.message,
-  //           // "Something went Wrong. Please try again"
-  //           type: "error",
-  //         });
-  //       },
-  //     },
-  //   );
-  // };
-  // const handleGoogleError = () => {
-  //   toast.add({
-  //     title: "Google OAuht Failed",
-  //     description: "Something went Wrong. Please try again",
-  //     type: "error",
-  //   });
-  // };
 
   return (
     <div className="flex flex-col gap-5">
@@ -185,10 +144,10 @@ export default function LoginForm() {
             }}
           </form.Field>
 
-          <Button disabled={loginPanding} type="submit">
-            {loginPanding ? (
+          <Button disabled={loginPending} type="submit">
+            {loginPending ? (
               <>
-                <Spinner /> "Submitting"
+                <Spinner /> submitting
               </>
             ) : (
               "Submit"
@@ -196,8 +155,20 @@ export default function LoginForm() {
           </Button>
         </FieldGroup>
       </form>
-      <FieldSeparator>OR</FieldSeparator>
+
+      <FieldSeparator>Or continue with</FieldSeparator>
+
       <GoogleLoginComponent />
+
+      <div className="text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link
+          href="/register"
+          className="font-medium underline underline-offset-4 hover:text-primary"
+        >
+          Register
+        </Link>
+      </div>
     </div>
   );
 }
