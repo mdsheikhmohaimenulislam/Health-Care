@@ -45,8 +45,6 @@ export const patientRegistrationSchema = z
     path: ["confirmPassword"],
   });
 
-  // .........=========================dddd=====........dddd...====================
-
 //* GP - 017, 013
 //* BL - 019, 014
 //* Airtel - 016
